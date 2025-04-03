@@ -3,7 +3,7 @@ import pytest
 import boto3
 from unittest.mock import patch, MagicMock
 from apis.lambda_handler import lambda_handler
-from config import AWS_BUCKET_NAME
+from config.settings import S3_BUCKET
 
 @pytest.fixture
 def mock_event():
@@ -60,7 +60,7 @@ def test_lambda_handler_success(mock_upload, mock_report, mock_processor, mock_i
     assert "Report generated and saved to S3 successfully!" in response_body["message"]
     assert response_body["top_companies"] == ["TCS", "Reliance", "Infosys"]
     assert response_body["top_brokers"] == ["ICICI Securities", "HDFC Securities", "Kotak Securities"]
-    assert f"s3://{AWS_BUCKET_NAME}/broker_reports/" in response_body["s3_report_path"]
+    assert f"s3://{S3_BUCKET}/broker_reports/" in response_body["s3_report_path"]
 
 @patch("apis.lambda_handler.ingest_mock_data")
 def test_lambda_handler_failure(mock_ingest, mock_event, mock_context):
