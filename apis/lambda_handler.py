@@ -2,11 +2,11 @@ import json
 import os
 import boto3
 from datetime import datetime
-from scraper.ingestor import ingest_mock_data
+from scrapper.ingestor import ingest_mock_data
 from processor.data_processor import DataProcessor
 from reports.report_generator import generate_report
 from utils.logger import setup_logger
-from config import AWS_BUCKET_NAME, AWS_REGION
+from config.settings import S3_BUCKET, AWS_REGION
 
 # Initialize logger
 logger = setup_logger()
@@ -71,14 +71,14 @@ def lambda_handler(event, context):
         s3_object_key = f"broker_reports/report_{timestamp}.json"
 
         logger.info("☁️ [INFO] Uploading report to S3...")
-        save_to_s3(REPORT_FILE, AWS_BUCKET_NAME, s3_object_key)
+        save_to_s3(REPORT_FILE, S3_BUCKET, s3_object_key)
 
         # Prepare response
         response = {
             "statusCode": 200,
             "body": json.dumps({
                 "message": "Report generated and saved to S3 successfully!",
-                "s3_report_path": f"s3://{AWS_BUCKET_NAME}/{s3_object_key}",
+                "s3_report_path": f"s3://{S3_BUCKET}/{s3_object_key}",
                 "top_companies": top_companies,
                 "top_brokers": top_brokers
             })
